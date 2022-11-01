@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>TGView</title>
+		<script type="text/javascript">	
+		function getChannels() {
+			var address = window.location.hostname
+			var port = window.location.port
+			var channels = []
+			fetch("http://" + address + ":" + port + "/getChannels")
+			.then(response => {
+				response.json().then(value => {
+					for (var i = 0; i < value.length; i++) {
+						channels.push(value[i])
+					}
+				})
+			})
+			return channels
+		}
+
+		function createChannel(title) {
+			var menu = document.getElementById("menu").getElementsByTagName("ul")[0]
+			var text = document.createTextNode(title)
+			var elem = document.createElement("li")
+
+			elem.appendChild(text)
+			menu.appendChild(elem)
+		}
+
+		async function loadChannels() {
+			var channels = getChannels()
+			await new Promise(resolve => setTimeout(resolve, 1000))
+			for (var i = 0; i < channels.length; i++) {
+				createChannel(channels[i])
+			}
+		}
+		</script>
+	</head>
+	<body onload="loadChannels()">
+		<div id="menu">
+			<ul style="list-style-type: none"></ul>
+		</div>
+		<div id="channel">
+		</div>
+	</body>
+</html>
